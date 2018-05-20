@@ -3,17 +3,15 @@ import gql from 'graphql-tag'
 import { graphql } from 'react-apollo'
 import '../css/paper.min.css';
 import styled from 'styled-components';
-import FlipMove from 'react-flip-move';
 
 import { sortByRating, sortByTitle } from '../utils/filters';
 import Card from './Card';
-import SearchControls from './SearchControls';
+import LocalizationContext from '../utils/context';
 
 const ItemsContainer = styled.div`
  display: flex;
  flex-wrap: wrap;
  max-width: 1000px;
- position: relative;
 `;
 
 const Page = styled.div`
@@ -28,36 +26,30 @@ const Filters = styled.div`
   display: flex;
 `;
 
-const DisplaySettings = styled.div`
-  display: flex;
-
-  > * {
-    &:not(:first-child){
-      margin-left: 2rem;
-    }
-  }
-`;
-
 class Main extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      filter: null
+    }
 
-  state = {
-    filter: null
+    this.handleFilterChange = this.handleFilterChange.bind(this);
   }
 
-  handleFilterChange = e => {
+  handleFilterChange(e){
     this.setState({
       filter: e.target.value
     });
   }
 
-  sort = () => {
+  sort(){
     const sortMap = {
       rating: sortByRating,
       title: sortByTitle
     };
 
     const { filter } = this.state;
-    if (filter && sortMap[filter]) {
+    if(filter && sortMap[filter]) {
       return sortMap[filter];
     }
     return (a, b) => { return 0 }
@@ -67,9 +59,8 @@ class Main extends Component {
     return [...this.props.data.contents]
       .sort(this.sort())
       .map((content, index) => {
-        const key =  `${content.author}${content.title}`.replace(/\s/g, "");;
-        return <Card key={key} {...content} />
-      });
+      return <Card key={index} {...content} />
+    })
   }
 
   render() {
@@ -79,29 +70,18 @@ class Main extends Component {
 
     return (
       <Page>
-        <DisplaySettings>
-          <Filters>
-            <div className="form-group">
-              <label htmlFor="filters">Filter By</label>
-              <select id="filters" onChange={(e) => this.handleFilterChange(e)}>
-                <option value="default">none</option>
-                <option value="rating">Rating</option>
-                <option value="title">Title</option>
-              </select>
-            </div>
-          </Filters>
-          <SearchControls />
-        </DisplaySettings>
+        <Filters>
+          <div className="form-group">
+            <label htmlFor="filters">Filter By</label>
+            <select id="filters" onChange={this.handleFilterChange}>
+              <option value="default">none</option>
+              <option value="rating">Rating</option>
+              <option value="title">Title</option>
+            </select>
+          </div>
+        </Filters>    
         <ItemsContainer>
-          <FlipMove 
-            typeName={null}
-            duration={2000} 
-            easing="ease-out"
-          >
-            {this.props.data.contents && 
-              this.renderContentCards()
-            }
-          </FlipMove>
+              {this.props.data.contents != null ? this.renderContentCards() : null}
         </ItemsContainer>
       </Page>
     )

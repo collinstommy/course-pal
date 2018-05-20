@@ -1,0 +1,51 @@
+createRef API =>
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.inputRef = React.createRef();
+  }
+
+  render() {
+    return <input type="text" ref={this.inputRef} />;
+  }
+
+  componentDidMount() {
+    this.inputRef.current.focus();
+  }
+}
+
+pass props down => 
+const Details = ( { name, language } ) => (
+  <div>
+    <p>{ name } works with { language }</p>
+  </div>
+);
+
+const Layout = ( { title, ...props } ) => (
+  <div>
+    <h1>{ title }</h1>
+    <Details { ...props } />
+  </div>
+);
+
+const App = () => (
+  <Layout 
+    title="I'm here to stay"
+    language="JavaScript"
+    name="Alex"
+  />
+);
+
+declare prop types at start of component =>
+static propTypes = {
+    model: object.isRequired,
+    title: string
+  }
+ 
+ export class =>
+ export default class vs class {}   expot default className - end of file
+
+ *destructuring props
+
+*

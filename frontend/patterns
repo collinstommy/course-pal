@@ -1,16 +1,10 @@
-state = { }
-binding using es6
-functional stateless components
-expression to check && component
-check for null prop and show loading
-template to wrap array of items not in div
-context api
-spread state
-console.log({ item, othergintg })
-const { id, ...rest} = item;
-[...HTMLElementList].foreach or [].call or ArrayFrom
-~ for indexOf
+state = { }  x  => main 
+binding using es6  x  => main
+functional stateless components => card
+expression to check && component => main
+check for null prop and show loading => main
+fragment to wrap array of items not in div => main => search controls
+context api => main + card
+pass props down using spread => <MyComponent amount={this.state.tet} {...this.props} >  => main renderContentCards
 
-pass props down using spread => <MyComponent amount={this.state.tet} {...this.props} >
-React portal pass to parent node
 new refs

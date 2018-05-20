@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react'
+import React from 'react'
 import styled from 'styled-components';
 import Rating from './Rating';
 import LocalizationContext from '../utils/context';
@@ -27,7 +27,7 @@ const Card = ({ title, author, tags, rating }) => {
   `;
 
   const handleView = () => {
-    //go to details page
+    console.log('go to details page');
   }
 
   const Copyright = styled.div`
@@ -44,9 +44,9 @@ const Card = ({ title, author, tags, rating }) => {
             {tags && tags.map((tag, index) => <Tag key={index} className="badge secondary">{tag}</Tag>)}
           </Tags>
           <Rating rating={rating} />
-          <button onClick={(e) => handleView}>View</button>
+          <button onClick={handleView}>View</button>
           <Copyright>
-            
+            {config.en}
           </Copyright>
         </div>
       </StyledCard>
