@@ -31,7 +31,7 @@ class Main extends Component {
     filter: null
   }
 
-  handleFilterChange = (e) => {
+  handleFilterChange = e => {
     this.setState({
       filter: e.target.value
     });

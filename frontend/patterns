@@ -10,3 +10,7 @@ console.log({ item, othergintg })
 const { id, ...rest} = item;
 [...HTMLElementList].foreach or [].call or ArrayFrom
 ~ for indexOf
+
+pass props down using spread => <MyComponent amount={this.state.tet} {...this.props} >
+React portal pass to parent node
+new refs

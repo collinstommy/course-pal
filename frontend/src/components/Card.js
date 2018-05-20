@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components';
 import Rating from './Rating';
+import LocalizationContext from '../utils/context';
 
 const Card = ({ title, author, tags, rating }) => {
 
@@ -29,17 +30,29 @@ const Card = ({ title, author, tags, rating }) => {
     //go to details page
   }
 
-  return <StyledCard className="card">
-      <div className="card-body">
-        <h4 className="card-title">{ title }</h4>
-        <h5 className="card-subtitle">{ author }</h5>
-        <Tags>
-          {tags && tags.map((tag, index)=> <Tag key={index} className="badge secondary">{tag}</Tag>)}
-        </Tags>
-        <Rating rating={rating}/>
-        <button onClick={(e) => handleView}>View</button>
-      </div>
-  </StyledCard>
+  const Copyright = styled.div`
+    padding-top: 1rem;
+  `;
+
+  return (
+    <LocalizationContext.Consumer>
+      {config => <StyledCard className="card">
+        <div className="card-body">
+          <h4 className="card-title">{title}</h4>
+          <h5 className="card-subtitle">{author}</h5>
+          <Tags>
+            {tags && tags.map((tag, index) => <Tag key={index} className="badge secondary">{tag}</Tag>)}
+          </Tags>
+          <Rating rating={rating} />
+          <button onClick={(e) => handleView}>View</button>
+          <Copyright>
+            
+          </Copyright>
+        </div>
+      </StyledCard>
+      }
+    </LocalizationContext.Consumer>
+  )
 }
 
 export default Card;
