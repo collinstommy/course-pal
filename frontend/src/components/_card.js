@@ -1,5 +1,11 @@
 
-import React, { Component } from 'react'
+
+//remove class
+//remove this
+//remove contructor
+// fix handlers
+
+import React from 'react'
 import styled from 'styled-components';
 import Rating from './Rating';
 import LocalizationContext from '../utils/context';
@@ -29,28 +35,27 @@ import LocalizationContext from '../utils/context';
     padding-top: 1rem;
   `;
 
-class Card extends React.Component { 
-  constructor(props){
-    super(props);
-    this.handleView = this.handleView.bind(this);
-  }
+const  Card = ({tags, title, author, ratings}) => { 
+  
 
-  handleView () {
+  const handleView  = () =>  {
     console.log('go to details page');
   }
 
-  render() {
+  const renderTags = () => {
+    return tags.map((tag, index) => <Tag key={index} className="badge secondary">{tag}</Tag>);
+  }
     return (
       <LocalizationContext.Consumer>
         {config => <StyledCard className="card">
           <div className="card-body">
-            <h4 className="card-title">{this.props.title}</h4>
-            <h5 className="card-subtitle">{this.props.author}</h5>
+            <h4 className="card-title">{title}</h4>
+            <h5 className="card-subtitle">{author}</h5>
             <Tags>
-              {this.props.tags && this.props.tags.map((tag, index) => <Tag key={index} className="badge secondary">{tag}</Tag>)}
+                {tags && this.renderTags()}
             </Tags>
-            <Rating rating={this.props.rating} />
-            <button onClick={this.handleView}>View</button>
+            <Rating rating={rating} />
+            <button onClick={handleView}>View</button>
             <Copyright>
               {config.en}
               {config.es}

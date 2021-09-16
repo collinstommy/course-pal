@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import gql from 'graphql-tag'
-import { graphql } from 'react-apollo'
 import '../css/paper.min.css';
 import styled from 'styled-components';
 
 import { sortByRating, sortByTitle } from '../utils/filters';
 import Card from './Card';
-import LocalizationContext from '../utils/context';
+import { connect } from 'react-redux';
+import SearchControls from './SearchControls';
+import { getTags, getNonFeatured, getCourses } from '../reducers/index';
 
 const ItemsContainer = styled.div`
  display: flex;
@@ -26,45 +26,72 @@ const Filters = styled.div`
   display: flex;
 `;
 
-class Main extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      filter: null
+const DisplaySettings = styled.div`
+  display: flex;
+
+  > * {
+    &:not(:first-child){
+      margin-left: 2rem;
     }
-
-    this.handleFilterChange = this.handleFilterChange.bind(this);
   }
+`;
+class Main extends Component {
+  state = {
+      filter: null,
+      showFeatured: false
+    };
 
-  handleFilterChange(e){
+  handleFilterChange = (e) => {
     this.setState({
       filter: e.target.value
     });
   }
 
-  sort(){
+  handleTagFilterChange = (e) => {
+    this.setState({
+      filter: e.target.value
+    });
+  }
+
+  sort() {
     const sortMap = {
       rating: sortByRating,
       title: sortByTitle
     };
 
     const { filter } = this.state;
-    if(filter && sortMap[filter]) {
+    if (filter && sortMap[filter]) {
       return sortMap[filter];
     }
     return (a, b) => { return 0 }
   }
 
   renderContentCards() {
-    return [...this.props.data.contents]
+    const { showFeatured } = this.state;
+    const { allCourses, excludingFeatured } = this.props;
+    const course = showFeatured ? allCourses : excludingFeatured;
+    return [...this.props.allCourses]
       .sort(this.sort())
       .map((content, index) => {
-      return <Card key={index} {...content} />
-    })
+        const key = `${content.author}${content.title}`.replace(/\s/g, "");
+        return <Card key={key}  />
+      })
   }
 
   render() {
-    if (this.props.data.loading) {
+    const { allCourses } = this.props;
+
+    const tags = allCourses
+      .map(course => course.tags)
+      .reduce((a, b) => a.concat(b))
+      .filter((tag, pos, self) => {
+        if (tag != null && self.indexOf(tag) == pos) {
+          return true;
+        }
+        return false;
+      });
+
+    if (!allCourses) {
       return <div>Loading</div>
     }
 
@@ -72,32 +99,36 @@ class Main extends Component {
       <Page>
         <Filters>
           <div className="form-group">
-            <label htmlFor="filters">Filter By</label>
+            <label htmlFor="filters">Sort By</label>
             <select id="filters" onChange={this.handleFilterChange}>
               <option value="default">none</option>
               <option value="rating">Rating</option>
               <option value="title">Title</option>
             </select>
           </div>
-        </Filters>    
+        </Filters>
+        <Filters>
+            <div className="form-group">
+              <label htmlFor="tagFilters">Filter By</label>
+              <select id="tagFilters" onChange={this.handleTagFilterChange}>
+                {tags.map(tag => <option value={tag}>{tag}</option>)}
+              </select>
+            </div>
+          </Filters>
+        <SearchControls />
         <ItemsContainer>
-              {this.props.data.contents != null ? this.renderContentCards() : null}
+          {allCourses != null ? this.renderContentCards() : null}
         </ItemsContainer>
       </Page>
     )
   }
 }
 
-const ITEMS_QUERY = gql`
-  query ItemsQuery {
-    contents {
-      title
-      type
-      author
-      tags
-      rating
-    }
+const mapStateToProps = (state) => {
+  return {
+    allCourses: state.course,
+    excludingFeatured: getNonFeatured(state)
   }
-`
+};
 
-export default graphql(ITEMS_QUERY)(Main)
+export default connect(mapStateToProps)(Main)
